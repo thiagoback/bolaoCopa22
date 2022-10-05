@@ -27,7 +27,7 @@ export const Login = () => {
                 </div>
 
                 <form className="space-y-6 p-4">
-                    <Input
+                    <input
                         type="text"
                         name="email"
                         label="E-mail"
