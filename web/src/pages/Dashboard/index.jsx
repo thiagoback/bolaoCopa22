@@ -26,10 +26,12 @@ export const Dashboard = () => (
                 <div className="space-y-4">
                     <Card   timeA={{slug:'sui'}}
                             timeB={{slug:'cam'}}
+                            grupo={{slug: 'Grupo B'}}
                             jogo={{horario:'7h00'}} />
 
                     <Card   timeA={{slug:'bra'}}
                             timeB={{slug:'ale'}}
+                            grupo={{slug: 'Grupo G'}}
                             jogo={{horario:'10h00'}} />
                 </div>
             </section>

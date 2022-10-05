@@ -1,7 +1,8 @@
-export const Card = ({timeA, timeB, jogo}) => (
+export const Card = ({timeA, timeB, jogo, grupo}) => (
     <div className='rounded-xl border border-grey1 p-4 text-center space-y-4'>
-        <span className='text-xs md:text-base border-grey1 font-bold'>{jogo.horario}</span>
-
+        <span className='text-xs md:text-base text-red1 font-bold'>{grupo.slug}</span>
+        <span className="text-red1 font-bold"> - </span>
+        <span className='text-xs md:text-base text-red1 font-bold'>{jogo.horario}</span>
         <div className='flex space-x-4 justify-center items-center'>
             <span className='uppercase text-sm md:text-base'>{timeA.slug}</span>
             <img src={`/assets-natrave/bandeiras/${timeA.slug}.png`} className='w-[40px] h-[40px]  md:w-56px] md-h[56px]'></img>
