@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-//Criação de usuário
+
 export const create = async (ctx) => {
     //console.log(ctx.headers)
     const [type, token] = ctx.headers.authorization.split(" ")
@@ -11,7 +11,7 @@ export const create = async (ctx) => {
 
     try {
         const verToken = jwt.verify(token, process.env.JWT_SECRET)
-    
+        
         if (!ctx.request.body.scoreTeamA && !ctx.request.body.scoreTeamB)
         {
             ctx.status = 400;
@@ -23,11 +23,30 @@ export const create = async (ctx) => {
         const scoreTeamB = parseInt(ctx.request.body.scoreTeamB)
         const idUser = verToken.sub;
         const data = { idGame, idUser, scoreTeamA, scoreTeamB }
-
+        
         try {
             const [palpite] = await prisma.palpite.findMany({
                 where: { idUser, idGame }
             })
+            
+            /*ctx.body = palpite
+                ? await prisma.hunch.update({
+                    where: {
+                        id: palpite.id,
+                    },
+                    data: {
+                        scoreTeamA,
+                        scoreTeamB
+                    }
+                })
+                : await prisma.palpite.create({
+                    data: {
+                        idUser,
+                        idGame,
+                        scoreTeamA,
+                        scoreTeamB
+                    }
+                })*/
             if (palpite) {
                 await prisma.palpite.update({
                     where: { id: palpite.id },
@@ -53,21 +72,9 @@ export const create = async (ctx) => {
             ctx.status = 500 //código de erro de servidor
         }
     } catch (error) {
+        console.log(error)
         ctx.status = 401
         return  
     }
 
-}
-
-// lista todos os usuários
-export const list = async ctx => {
-
-    try {
-        const palpites = await prisma.user.findMany()
-        ctx.body = users
-        ctx.status = 201 //código de criado
-   } catch(error) {
-        ctx.body = error
-        ctx.status = 500 //código de erro de servidor
-   }
 }

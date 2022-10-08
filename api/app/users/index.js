@@ -50,7 +50,7 @@ export const login = async ctx => {
     }
 
     const {password, ...result} = user  //retira o password do user por questões de segurança
-    const acessToken = jwt.sign({
+    const accessToken = jwt.sign({
         sub: user.id,
         name: user.name,
         expiresIn: "7d"
@@ -58,6 +58,30 @@ export const login = async ctx => {
 
     ctx.body = {
         user: result,
-        acessToken
+        accessToken
+    }
+}
+
+export const palpites = async ctx => {
+    const username = ctx.request.params.username
+
+    const user = await prisma.user.findUnique({
+        where: {username}
+    })
+
+    if (!user) {
+        ctx.status = 404
+        return
+    }
+
+    const palpites = await prisma.palpite.findMany({
+        where: {
+            idUser: user.id
+        }
+    })
+
+    ctx.body = {
+        name: user.name,
+        palpites: palpites
     }
 }

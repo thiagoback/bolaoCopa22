@@ -2,13 +2,15 @@ import { Icon } from './../../components'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { isValid } from 'date-fns'
+import { useLocalStorage } from 'react-use'
+import { Navigate } from 'react-router-dom'
+
 
 const Input = ({name, label, error, ...props}) => (
     <div className="flex flex-col">
         <label htmlFor={name} className="text-sm font-bold text-red1 mb-2">{label}</label>
         <input name={name} id={name} {...props} className={`p-3 border border-grey1 rounded-xl focus:outline focus:outline-1 focus:outline-red1 ${error && 'border-red2'}`}/>
-        <span className='p-2 text-sm text-red2' ></span>
+        <spam className='p-2 text-sm text-red2' >{error}</spam>
     </div>
 )
 
@@ -20,16 +22,15 @@ const validationSchema = yup.object().shape({
 })
 
 export const Cadastro = () => {
+    const [auth, setAuth] = useLocalStorage('auth', {})
     const formik = useFormik({
         onSubmit: async (values) => {  //envio das informações para o back end! As validações de campo já foram realizada pelo yup!
             const res = await axios({
                 method: 'post',
-                baseURL: 'http://192.168.0.10:3000', //endereço temporário
+                baseURL: import.meta.env.VITE_API_URL, //endereço temporário
                 url: '/users',
                 data: values
             })
-
-            console.log(res.data)
 
         },
         initialValues: {
@@ -41,7 +42,9 @@ export const Cadastro = () => {
         validationSchema
     })
 
-    console.log(formik.errors)
+    if (auth?.user?.id) {    // as ? servem para não dar erro caso exista um usuário sem id
+        return <Navigate to="/dashboard" replace={true} />
+      }
     
     return (
         <div>
@@ -103,8 +106,12 @@ export const Cadastro = () => {
                         onBlur={formik.handleBlur}
                     />
                     <div></div>
-                    <button type="submit" className="text-center w-full  bg-red2 text-white px-8 py-3 rounded-xl disabled:opacity-50" disabled={!formik.isValid}>
-                        Criar minha conta
+                    <button 
+                        type="submit" 
+                        className="text-center w-full  bg-red2 text-white px-8 py-3 rounded-xl disabled:opacity-50" 
+                        disabled={!formik.isValid || formik.isSubmitting}
+                    >
+                        {formik.isSubmitting ? 'Criando cadastro...' : 'Criar cadastro' }
                     </button> 
 
                 </form>
