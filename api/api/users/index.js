@@ -6,12 +6,12 @@ const prisma = new PrismaClient()
 
 //Criação de usuário
 export const create = async (ctx) => {
-    const password = await bcrypt.hash(ctx.request.body.password, 10)
+    //const password = await bcrypt.hash(ctx.request.body.password, 10)
     const data = {
         username: ctx.request.body.username,
         name: ctx.request.body.name,
         email: ctx.request.body.email,
-        password,
+        password: ctx.request.body.password,
     }
 
     try {
@@ -41,7 +41,7 @@ export const login = async ctx => {
         return 
     }
 
-    const passwordMatch = await bcrypt.compare(plainTextPassword, user.password)
+    const passwordMatch = (user.password === plainTextPassword)//await bcrypt.compare(plainTextPassword, user.password)
 
     if (!passwordMatch) {
         //console.log('senha errada')
